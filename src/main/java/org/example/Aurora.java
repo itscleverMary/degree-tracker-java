@@ -444,15 +444,13 @@ public class Aurora {
     }
 
     public void handleInput(String input, String reasonForInput) {
+        System.out.println(reasonForInput);
         if (reasonForInput.equals(askIfUserHasAccAlready)){
             if (input.equals("Y")){
                 applicationDisplay.updateInformLabel("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
             } else if (input.equals("N")){
                 applicationDisplay.updateInformLabel("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
-            } else if (input.equals(incorrectUserCredentials)){
-
-            }
-            else {
+            } else {
                 applicationDisplay.updateInformLabel("invalid input\nDo you already have an account? (Y/N)");
             }
         } else if (reasonForInput.equals(gettingUserCredentials)){
@@ -464,10 +462,11 @@ public class Aurora {
             } else {
                 signUpIntoAurora(applicationDisplay.getUserInputInfo(), false);
             }
-        } else if (input.trim().equals("-1") && (reasonForInput.equals(exitInputingUserAndPassword))){
+        }
+        else if (input.trim().equals("-1") && (reasonForInput.equals(exitInputingUserAndPassword))){
 
             //They want to go back
-            applicationDisplay.updateInformLabel("Log In/Sign Up Page:\n" + "Do you already have an account? (Y/N)");
+            applicationDisplay.updateInformLabel("Do you already have an account? (Y/N)");
         }
     }
 
@@ -681,7 +680,7 @@ public class Aurora {
         while (!validString){
             givenInput = userInput.getText();
 
-            if (givenInput.trim() != ""){
+            if (!givenInput.trim().equals("")){
                 validString = true;
             }
             else{
