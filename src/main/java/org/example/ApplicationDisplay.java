@@ -29,16 +29,29 @@ public class ApplicationDisplay extends Application {
     private String askUserCredentialsPromptString = "Type in your username and password, seperated by a blank space(s) or -1 to Exit";
     private String incorrectUserHasAccountResponse = "invalid input\nDo you already have an account? (Y/N)";;
     private String askIfUserHasAccount = "AskIfUserHasAccountAlready";
+    private Stage theStage;
+    private Parent auroraRoot;
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ApplicationDisplay.fxml"));
-        Parent root = loader.load();
+        if (stage != null){
+            theStage = stage;
+        }
+        FXMLLoader applicationDisplayLoader = new FXMLLoader(getClass().getResource("/ApplicationDisplay.fxml"));
+        FXMLLoader auroraDisplayLoader = new FXMLLoader(getClass().getResource("/Aurora.fxml"));
 
-        ApplicationDisplay controller = loader.getController();
-        aurora.setApplicationDisplay(controller);
+        ApplicationDisplay applicationDisplayController = applicationDisplayLoader.getController();
+        Aurora auroraDisplayController = auroraDisplayLoader.getController();
 
-        Scene scene = new Scene(root);
+        applicationDisplayLoader.setController(this);
+        aurora.setApplicationDisplay(this);
+        aurora.setAuroraDisplay(auroraDisplayController);
+
+        Parent applicationRoot = applicationDisplayLoader.load();
+        auroraRoot = auroraDisplayLoader.load();
+
+        System.out.println("in start method");
+        Scene scene = new Scene(applicationRoot);
         stage.setTitle("Aurora");
         stage.setScene(scene);
         stage.show();
@@ -72,4 +85,7 @@ public class ApplicationDisplay extends Application {
         return userInput.getText();
     }
 
+    public void showScreen() {
+        theStage.getScene().setRoot(auroraRoot);
+    }
 }

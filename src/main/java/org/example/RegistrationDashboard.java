@@ -15,6 +15,7 @@ public class RegistrationDashboard {
     //private static String AVAILABLE_COURSES_FILENAME = "main/java/app/Available-Courses.txt";
     private static ArrayList<String> AVAILABLE_COURSES_NAME_LIST = new ArrayList<String>();
     private static ArrayList<Course> AVAILABLE_COURSES_OBJECTS_LIST = new ArrayList<Course>();
+    private Aurora aurora = Aurora.getInstance();
 
     /**
      * Ensures there is only one instance of the Registration Dashboard.
@@ -22,7 +23,6 @@ public class RegistrationDashboard {
      * @return   the registrationDashboard object
      */
     private RegistrationDashboard(){}
-
 
     public static int getNumAvailableCourses(){
         return NUMBER_OF_AVAILABLE_COURSES;
@@ -138,7 +138,7 @@ public class RegistrationDashboard {
                     String password = splitLine[1];
                     if (!username.isBlank() && !password.isBlank()){
                         //second parameter is true because we are loading in previous student logins
-                        Aurora.signUpIntoAurora(currLine, true);
+                        Aurora.getInstance().signUpIntoAurora(currLine, true); //Fix This. This happened bcs signUpintoAurora method was static and we just made it an instance method
                     }
                 }
                 currLine = br.readLine();

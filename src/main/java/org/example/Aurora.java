@@ -1,10 +1,13 @@
 package org.example;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 import jdk.jshell.spi.ExecutionControlProvider;
 
 import java.util.Scanner;
@@ -31,8 +34,9 @@ public class Aurora {
     private static String exitInputingUserAndPassword = "ExitEnteringUserAndPassword";
     private String incorrectUserCredentials = "Retry. Type in your username and password, seperated by a blank space(s) or -1 to Exit";
     private static String goBackInput = "GoBack";
-    private boolean userTryingToLogIn = true;
+    private boolean userChoseLogIn = true;
     private ApplicationDisplay applicationDisplay;
+    private Aurora auroraDisplay;
     private static Aurora instance;
     private static Student[] allStudents;
     private static String currentUserName;
@@ -40,9 +44,12 @@ public class Aurora {
 
     @FXML
     private TextField userInput;
+    @FXML
     private Button defaultPageEnterButton;
+    @FXML
+    private AnchorPane welcomePane;
 
-    private Aurora(){}
+    public Aurora(){}
 
     public static Aurora getInstance(){
         if (instance == null){
@@ -70,6 +77,7 @@ public class Aurora {
                     currentUserName = splitLogInInfo[0];
                     currentPassword = splitLogInInfo[1];
                     applicationDisplay.updateInformLabel("Successful LogIn!");
+                    applicationDisplay.showScreen();
                 }
             } else {
                 System.out.println("Incorrect username or password.");
@@ -203,7 +211,7 @@ public class Aurora {
      * @param loadingInLogIns  a boolean value that informs whether or not we are loading in previous login information
      * @return                true if a successful signup, otherwise false.
      */
-    public static boolean signUpIntoAurora(String signUpInfo,  boolean loadingInLogIns){
+    public boolean signUpIntoAurora(String signUpInfo,  boolean loadingInLogIns){
         boolean newUserCreated = false;
 
         if (allLogIns != null && (signUpInfo != null && (!signUpInfo.isBlank()) && !userNameExists(signUpInfo))){
@@ -228,6 +236,10 @@ public class Aurora {
                 //However, if they are just signing up, there should only be 1 chunk of space in between text.
                 if ((loadingInLogIns && splitSignUpInfo.length >= allowedInfoCount) || (!loadingInLogIns && splitSignUpInfo.length == 2)){
                     newUserCreated = makeStudentObject(loadingInLogIns, splitSignUpInfo, newStudent);
+                    if (!loadingInLogIns) {
+                        applicationDisplay.updateInformLabel("Successful Sign Up!");
+                        applicationDisplay.showScreen();
+                    }
                 } else {
                     System.out.println("Incorrect username or password.");
                 }
@@ -413,6 +425,15 @@ public class Aurora {
         System.out.println("Do you already have an account? (Y/N)");
     }
 
+    private void registerForCoursesUI(){
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(event -> {
+            welcomePane.setVisible(false);
+            welcomePane.setManaged(false);
+        });
+        delay.play();
+    }
+
     /**
      * A helper method that keeps askign the user for their username and password, unless they enter "-1".
      *
@@ -448,19 +469,24 @@ public class Aurora {
         if (reasonForInput.equals(askIfUserHasAccAlready)){
             if (input.equals("Y")){
                 applicationDisplay.updateInformLabel("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
+                userChoseLogIn = true;
             } else if (input.equals("N")){
                 applicationDisplay.updateInformLabel("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
+                userChoseLogIn = false;
             } else {
                 applicationDisplay.updateInformLabel("invalid input\nDo you already have an account? (Y/N)");
             }
         } else if (reasonForInput.equals(gettingUserCredentials)){
 
-            if (userTryingToLogIn){
+            if (userChoseLogIn){
                 if (!logIntoAurora(applicationDisplay.getUserInputInfo(), false)){
                     applicationDisplay.updateInformLabel("Retry. Type in your username and password, seperated by a blank space(s) or -1 to Exit");
                 }
             } else {
-                signUpIntoAurora(applicationDisplay.getUserInputInfo(), false);
+                System.out.println("User tries to sign up");
+                if (!signUpIntoAurora(applicationDisplay.getUserInputInfo(), false)){
+                    applicationDisplay.updateInformLabel("Retry. Type in your username and password, seperated by a blank space(s) or -1 to Exit");
+                }
             }
         }
         else if (input.trim().equals("-1") && (reasonForInput.equals(exitInputingUserAndPassword))){
@@ -476,6 +502,14 @@ public class Aurora {
 
     public ApplicationDisplay getApplicationDisplay(){
         return applicationDisplay;
+    }
+
+    public void setAuroraDisplay(Aurora display){
+        auroraDisplay = display;
+    }
+
+    public Aurora getAuroraDisplay(){
+        return auroraDisplay;
     }
     /**
      * Asks the user to sign up or log into Aurora. Calls other methods to validate the user's information.
@@ -503,7 +537,7 @@ public class Aurora {
             handleInput(userInfo, goBackInput);
         } else if (userChoice.equals("Y")){ //verify their log in
             successfulLogIn = logIntoAurora(userInfo, false);
-            userTryingToLogIn = true;
+            userChoseLogIn = true;
 
             if (!successfulLogIn){
                 if (!startTryingToLogIn(successfulLogIn, goBack)){ //if they're not going back. (so they logged in)
@@ -512,7 +546,7 @@ public class Aurora {
             }
 
         } else if (userChoice.equals("N")){ //ask them to sign up
-            userTryingToLogIn = false;
+            userChoseLogIn = false;
             successfulSignUp = signUpIntoAurora(userInfo, false);
             while(!successfulSignUp && !goBack){
                 informInvalidSignUpInfo();
@@ -554,7 +588,8 @@ public class Aurora {
      * Registers the user into a course. Adds the course to their list of current courses, and takes the course
      * of the list of available courses for the user.
      */
-    public static void registerForCourses(){
+    @FXML
+    public void registerForCourses(){
         int courseOptionChosen = getValidIntegerChoice(RegistrationDashboard.getNumAvailableCourses());
         String courseNameChosen = RegistrationDashboard.getAvailableCourseNameList().get(courseOptionChosen-1);
 

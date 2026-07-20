@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #DAA06D; -fx-background-insets: 2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.ApplicationDisplay">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #DAA06D; -fx-background-insets: 2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextField fx:id="userInput" layoutX="208.0" layoutY="185.0" prefHeight="31.0" prefWidth="188.0" />
       <Label fx:id="informLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="7.0" layoutY="90.0" prefHeight="97.0" prefWidth="587.0" text="Do you already have an account? (Y/N)" textAlignment="CENTER">
