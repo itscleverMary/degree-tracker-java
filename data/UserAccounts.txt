@@ -4,3 +4,4 @@ Tofu number1Leader CurrentCourses:[Elementary Discrete Math] CompletedCourses:[I
 ItsCleverMary pancake42 CurrentCourses:[Vector Geometry and Linear Algebra] CompletedCourses:[Intro To Computer Science 2, Elementary Discrete Math]
 forsure yas CurrentCourses:[Intro To Computer Science 2] CompletedCourses:[Elementary Discrete Math]
 gfd ggg CurrentCourses:[] CompletedCourses:[]
+Nre gghg CurrentCourses:[] CompletedCourses:[]

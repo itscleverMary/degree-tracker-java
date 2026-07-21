@@ -48,6 +48,8 @@ public class Aurora {
     private Button defaultPageEnterButton;
     @FXML
     private AnchorPane welcomePane;
+    @FXML
+    private AnchorPane registerCoursesPane;
 
     public Aurora(){}
 
@@ -425,15 +427,27 @@ public class Aurora {
         System.out.println("Do you already have an account? (Y/N)");
     }
 
+
     private void registerForCoursesUI(){
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(event -> {
-            welcomePane.setVisible(false);
-            welcomePane.setManaged(false);
-        });
-        delay.play();
+        System.out.println("yas clicked");
+//        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+//        delay.setOnFinished(event -> {
+//            welcomePane.setVisible(false);
+//            welcomePane.setManaged(false);
+//        });
+//        delay.play();
+        welcomePane.setVisible(false);
+        welcomePane.setManaged(false);
+
+        registerCoursesPane.setVisible(true);
+        registerCoursesPane.setManaged(true);
     }
 
+    @FXML
+    private void registerCourseButtonClick(){
+        System.out.println("is it printed  yet?");
+        registerForCourses();
+    }
     /**
      * A helper method that keeps askign the user for their username and password, unless they enter "-1".
      *
@@ -588,8 +602,8 @@ public class Aurora {
      * Registers the user into a course. Adds the course to their list of current courses, and takes the course
      * of the list of available courses for the user.
      */
-    @FXML
     public void registerForCourses(){
+        registerForCoursesUI();
         int courseOptionChosen = getValidIntegerChoice(RegistrationDashboard.getNumAvailableCourses());
         String courseNameChosen = RegistrationDashboard.getAvailableCourseNameList().get(courseOptionChosen-1);
 
