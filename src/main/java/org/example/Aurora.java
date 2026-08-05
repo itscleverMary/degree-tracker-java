@@ -8,8 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
+import javafx.animation.PauseTransition;
 import jdk.jshell.spi.ExecutionControlProvider;
 
+import javafx.event.ActionEvent;
 import java.util.Scanner;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -33,6 +35,7 @@ public class Aurora {
     private static String gettingUserCredentials = "UserCredentials";
     private static String exitInputingUserAndPassword = "ExitEnteringUserAndPassword";
     private String incorrectUserCredentials = "Retry. Type in your username and password, seperated by a blank space(s) or -1 to Exit";
+    private boolean isInformLabelTransitioning = false;
     private static String goBackInput = "GoBack";
     private boolean userChoseLogIn = true;
     private ApplicationDisplay applicationDisplay;
@@ -50,6 +53,17 @@ public class Aurora {
     private AnchorPane welcomePane;
     @FXML
     private AnchorPane registerCoursesPane;
+    @FXML
+    private Label coursesAvailable;
+    @FXML
+    private TextField userCourseChoice;
+    @FXML
+    private Button courseRegisterButton;
+    @FXML
+    private Button registerCourseBackButton;
+    @FXML
+    private Label registerInformLabel;
+
 
     public Aurora(){}
 
@@ -80,6 +94,8 @@ public class Aurora {
                     currentPassword = splitLogInInfo[1];
                     applicationDisplay.updateInformLabel("Successful LogIn!");
                     applicationDisplay.showScreen();
+                    welcomePane.setVisible(true);
+                    welcomePane.setManaged(true);
                 }
             } else {
                 System.out.println("Incorrect username or password.");
@@ -241,6 +257,8 @@ public class Aurora {
                     if (!loadingInLogIns) {
                         applicationDisplay.updateInformLabel("Successful Sign Up!");
                         applicationDisplay.showScreen();
+                        welcomePane.setVisible(true);
+                        welcomePane.setManaged(true);
                     }
                 } else {
                     System.out.println("Incorrect username or password.");
@@ -290,8 +308,9 @@ public class Aurora {
         System.out.println();
 
         if (chosenOption == REGISTER_FOR_COURSES_OPTION){
-            if (RegistrationDashboard.showAvailableCourses()){
-                registerForCourses();
+            String availableCoursesString = RegistrationDashboard.showAvailableCourses();
+            if (availableCoursesString != null){
+                //registerForCoursesUI();
             }
         } else if (chosenOption == DISPLAY_CURRENT_COURSES_OPTION){
             displayCurrentCourses(currentUserName, currentPassword);
@@ -423,30 +442,46 @@ public class Aurora {
      * @param userChoice  The user's choice. If Y, then takes them to log in. If No, then takes user to sign up.
      */
     private static void askAccountOwnership(String userChoice){
-        System.out.println("invalid input\n");
-        System.out.println("Do you already have an account? (Y/N)");
+        //System.out.println("invalid input\n");
+        //System.out.println("Do you already have an account? (Y/N)");
     }
 
-
-    private void registerForCoursesUI(){
-        System.out.println("yas clicked");
-//        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-//        delay.setOnFinished(event -> {
-//            welcomePane.setVisible(false);
-//            welcomePane.setManaged(false);
-//        });
-//        delay.play();
+    public void setUpUI(){
         welcomePane.setVisible(false);
         welcomePane.setManaged(false);
 
-        registerCoursesPane.setVisible(true);
+        registerCoursesPane.setManaged(false);
+        registerCoursesPane.setVisible(false);
+    }
+
+    public void registerForCoursesUI(){
+        welcomePane.setVisible(false);
+        welcomePane.setManaged(false);
+
         registerCoursesPane.setManaged(true);
+        registerCoursesPane.setVisible(true);
+    }
+
+    public void showWelcomePane(){
+        welcomePane.setVisible(true);
+        welcomePane.setManaged(true);
+    }
+    @FXML
+    public void courseRegisterButtonClick(){
+        String courseName = userCourseChoice.getText();
+        registerForCourses(courseName);
     }
 
     @FXML
-    private void registerCourseButtonClick(){
+    public void registerCourseButtonClick(){
         System.out.println("is it printed  yet?");
-        registerForCourses();
+        String availableCoursesString = RegistrationDashboard.showAvailableCourses();
+        if (availableCoursesString != null){
+            coursesAvailable.setText("Enter the course name:\n" + availableCoursesString);
+        } else {
+            System.out.println("it's null");
+        }
+        registerForCoursesUI();
     }
     /**
      * A helper method that keeps askign the user for their username and password, unless they enter "-1".
@@ -479,7 +514,6 @@ public class Aurora {
     }
 
     public void handleInput(String input, String reasonForInput) {
-        System.out.println(reasonForInput);
         if (reasonForInput.equals(askIfUserHasAccAlready)){
             if (input.equals("Y")){
                 applicationDisplay.updateInformLabel("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
@@ -525,12 +559,16 @@ public class Aurora {
     public Aurora getAuroraDisplay(){
         return auroraDisplay;
     }
+
+    public void uIDisplayAvailableCourses(){
+
+    }
     /**
      * Asks the user to sign up or log into Aurora. Calls other methods to validate the user's information.
      * Accesses their data from previously using the site if applicable.
      */
     public boolean askUserToSignUpOrLogIn(){
-        System.out.println("Log In/Sign Up Page:\n" + "Do you already have an account? (Y/N)");
+        //System.out.println("Log In/Sign Up Page:\n" + "Do you already have an account? (Y/N)");
         String userChoice = getValidStringBoxInput();
         handleInput(userChoice, askIfUserHasAccAlready);
         boolean successfulLogIn = false;
@@ -541,13 +579,12 @@ public class Aurora {
             userChoice = getValidStringBoxInput();
         }
 
-        System.out.println("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
+        //System.out.println("Type in your username and password, seperated by a blank space(s) or -1 to Exit");
         handleInput(userChoice, gettingUserCredentials);
 
         String userInfo = getValidStringBoxInput();
         boolean goBack = false;
         if (exitEnteringUserName(userInfo)){ //check if they want to go back to log in/signup page
-            askUserToSignUpOrLogIn(); //They need to either log in or sign up
             handleInput(userInfo, goBackInput);
         } else if (userChoice.equals("Y")){ //verify their log in
             successfulLogIn = logIntoAurora(userInfo, false);
@@ -556,6 +593,7 @@ public class Aurora {
             if (!successfulLogIn){
                 if (!startTryingToLogIn(successfulLogIn, goBack)){ //if they're not going back. (so they logged in)
                     successfulLogIn = true;
+                    System.out.println("The logged in");
                 }
             }
 
@@ -597,31 +635,66 @@ public class Aurora {
 
         return studentFound;
     }
+    @FXML
+    public void backButtonPressed(ActionEvent event){
+        Button buttonClicked = (Button) event.getSource();
 
+        if (buttonClicked == registerCourseBackButton){ //if the same object in memory reference
+            hideRegisterCoursesPane();
+        }
+    }
+    private void hideRegisterCoursesPane(){
+        registerCoursesPane.setVisible(false);
+        registerCoursesPane.setManaged(false);
+        showWelcomePane();
+    }
+
+    private void labelDisappear(Label label){
+        registerInformLabel.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
+        courseRegisterButton.setDisable(true);
+        pause.setOnFinished(event -> {
+            label.setVisible(false);
+            if (registerInformLabel.getText().contains("successful")){
+                //switch back to welcome to aurora screen
+                hideRegisterCoursesPane();
+            }
+            courseRegisterButton.setDisable(false);
+        });
+
+        pause.play();
+    }
     /**
      * Registers the user into a course. Adds the course to their list of current courses, and takes the course
      * of the list of available courses for the user.
      */
-    public void registerForCourses(){
-        registerForCoursesUI();
-        int courseOptionChosen = getValidIntegerChoice(RegistrationDashboard.getNumAvailableCourses());
-        String courseNameChosen = RegistrationDashboard.getAvailableCourseNameList().get(courseOptionChosen-1);
+    public void registerForCourses(String courseNameChosen){
+        //registerForCoursesUI();
+        int verifyCourseName = RegistrationDashboard.getAvailableCourseNameList().indexOf(courseNameChosen);
 
-        boolean completed = findStudentByName(currentUserName, currentPassword).getStudentPlan().isCourseCompleted(courseNameChosen);
-        boolean takingCurrently = findStudentByName(currentUserName, currentPassword).getStudentPlan().aCurrentCourse(courseNameChosen);
+        if (verifyCourseName != -1) {
+            boolean completed = findStudentByName(currentUserName, currentPassword).getStudentPlan().isCourseCompleted(courseNameChosen);
+            boolean takingCurrently = findStudentByName(currentUserName, currentPassword).getStudentPlan().aCurrentCourse(courseNameChosen);
 
-        //check if the student has completed this course already and not currently taking the course
-        if (!completed && !takingCurrently){
-            StudentPlan studentPlan = findStudentByName(currentUserName, currentPassword).getStudentPlan();
-            if(studentPlan.addToCurrentCourses(RegistrationDashboard.findCourseObject(courseNameChosen))){
-                ArrayList<String> updatedLines = new ArrayList<String>();
-                readUserAccounts(updatedLines);
-                writeToUserAccounts(updatedLines);
-                System.out.println("You have successfully registered for " + courseNameChosen + "\n");
+            //check if the student has completed this course already and not currently taking the course
+            if (!completed && !takingCurrently) {
+                StudentPlan studentPlan = findStudentByName(currentUserName, currentPassword).getStudentPlan();
+                if (studentPlan.addToCurrentCourses(RegistrationDashboard.findCourseObject(courseNameChosen))) {
+                    ArrayList<String> updatedLines = new ArrayList<String>();
+                    readUserAccounts(updatedLines);
+                    writeToUserAccounts(updatedLines);
+                }
+                registerInformLabel.setText("You have successfully registered for " + userCourseChoice.getText());
+            } else if (takingCurrently) {
+                registerInformLabel.setText("You are currently registered for " + userCourseChoice.getText());
+            } else {
+                registerInformLabel.setText("This course has been completed");
             }
-        } else if (takingCurrently){
-            System.out.println("\nYou are currently registered for " + courseNameChosen);
+        } else {
+            //inform the user if we're not already telling them to try again.
+            registerInformLabel.setText("That Course Is Currently Not Offered. Try Again.");
         }
+        labelDisappear(registerInformLabel);
     }
 
     /**

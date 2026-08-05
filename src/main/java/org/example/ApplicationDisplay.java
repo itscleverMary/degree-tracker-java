@@ -40,17 +40,15 @@ public class ApplicationDisplay extends Application {
         FXMLLoader applicationDisplayLoader = new FXMLLoader(getClass().getResource("/ApplicationDisplay.fxml"));
         FXMLLoader auroraDisplayLoader = new FXMLLoader(getClass().getResource("/Aurora.fxml"));
 
-        ApplicationDisplay applicationDisplayController = applicationDisplayLoader.getController();
-        Aurora auroraDisplayController = auroraDisplayLoader.getController();
-
         applicationDisplayLoader.setController(this);
+        auroraDisplayLoader.setController(aurora);
         aurora.setApplicationDisplay(this);
-        aurora.setAuroraDisplay(auroraDisplayController);
 
         Parent applicationRoot = applicationDisplayLoader.load();
         auroraRoot = auroraDisplayLoader.load();
 
-        System.out.println("in start method");
+        aurora.setUpUI();
+
         Scene scene = new Scene(applicationRoot);
         stage.setTitle("Aurora");
         stage.setScene(scene);
@@ -63,7 +61,6 @@ public class ApplicationDisplay extends Application {
             reasonForInput = exitInputingUserAndPassword;
         } else if (informLabel.getText().equals(askUserCredentialsPromptString)) {
             reasonForInput = "UserCredentials";
-            System.out.println("incorr usercred");
         } else if (informLabel.getText().equals(incorrectUserCredentials)){
             reasonForInput = gettingUserCredentials;
         } else if (informLabel.getText().equals(incorrectUserHasAccountResponse)){

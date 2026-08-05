@@ -34,18 +34,16 @@ public class RegistrationDashboard {
 
     /**
      * Prints a list of avalilable courses the school offers.
-     * @return                true if list was shown, false otherwise.
+     * @return              true if list was shown, false otherwise.
      */
-    public static boolean showAvailableCourses(){
-        boolean success = false;
+    public static String showAvailableCourses(){
+        String availableCoursesInfo = "";
         if (AVAILABLE_COURSES_NAME_LIST != null){
-            System.out.println("Available Courses:");
             for (int i = 0; i < AVAILABLE_COURSES_NAME_LIST.size(); i++){
-                System.out.println(i + 1 + ". " + AVAILABLE_COURSES_NAME_LIST.get(i));
+                availableCoursesInfo += (i + 1) + ". " + AVAILABLE_COURSES_NAME_LIST.get(i) + "\n";
             }
-            success = true;
         }
-        return success;
+        return availableCoursesInfo;
     }
 
     /**

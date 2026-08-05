@@ -22,11 +22,13 @@ public class Main {
         RegistrationDashboard.loadAvailableCourses();
         RegistrationDashboard.loadInPrevStudentLogIns();
 
+        System.out.println("Before");
         Application.launch(ApplicationDisplay.class, args);
         boolean successfulLogInOrSignUp = aurora.askUserToSignUpOrLogIn();
         while (!successfulLogInOrSignUp) { //while they don't sign up/log in successfully
             successfulLogInOrSignUp = aurora.askUserToSignUpOrLogIn();
         }
-        aurora.displayAuroraOptions();
+        System.out.println("User logged in done");
+        //aurora.displayAuroraOptions();
     }
 }
