@@ -50,17 +50,37 @@ public class Aurora {
     @FXML
     private Button defaultPageEnterButton;
     @FXML
+    private Button courseMarkEnterButton;
+    @FXML
     private AnchorPane welcomePane;
     @FXML
     private AnchorPane registerCoursesPane;
     @FXML
+    private AnchorPane courseDisplayPane;
+    @FXML
+    private AnchorPane markCoursePane;
+    @FXML
     private Label coursesAvailable;
+    @FXML
+    private Label currCoursesToMark;
+    @FXML
+    private TextField userMarkCourseChoice;
     @FXML
     private TextField userCourseChoice;
     @FXML
     private Button courseRegisterButton;
     @FXML
+    private Button markCourseBackButton;
+    @FXML
     private Button registerCourseBackButton;
+    @FXML
+    private Label currCoursesToMarkDisplay;
+    @FXML
+    private Button courseDisplayBackButton;
+    @FXML
+    private Label courseDisplayInformation;
+    @FXML
+    private Label markInformLabel;
     @FXML
     private Label registerInformLabel;
 
@@ -94,8 +114,7 @@ public class Aurora {
                     currentPassword = splitLogInInfo[1];
                     applicationDisplay.updateInformLabel("Successful LogIn!");
                     applicationDisplay.showScreen();
-                    welcomePane.setVisible(true);
-                    welcomePane.setManaged(true);
+                    showWelcomePane();
                 }
             } else {
                 System.out.println("Incorrect username or password.");
@@ -257,8 +276,7 @@ public class Aurora {
                     if (!loadingInLogIns) {
                         applicationDisplay.updateInformLabel("Successful Sign Up!");
                         applicationDisplay.showScreen();
-                        welcomePane.setVisible(true);
-                        welcomePane.setManaged(true);
+                        showWelcomePane();
                     }
                 } else {
                     System.out.println("Incorrect username or password.");
@@ -317,7 +335,7 @@ public class Aurora {
         } else if (chosenOption == DISPLAY_COMPLETED_COURSES_OPTION){
             displayCompletedCourses(currentUserName, currentPassword);
         } else if (chosenOption == MARK_COURSE_AS_COMPLETED_OPTION){
-            markCourseCompleted();
+            //markCourseCompleted();
         }
         else if (chosenOption == EXIT_AURORA_OPTION){
             System.out.println("Logging off...");
@@ -447,29 +465,51 @@ public class Aurora {
     }
 
     public void setUpUI(){
-        welcomePane.setVisible(false);
-        welcomePane.setManaged(false);
-
-        registerCoursesPane.setManaged(false);
-        registerCoursesPane.setVisible(false);
+        hideWelcomePane();
+        hideRegisterCoursesPane();
+        hideCourseDisplayPane();
+        hideMarkCoursePane();
     }
 
     public void registerForCoursesUI(){
-        welcomePane.setVisible(false);
-        welcomePane.setManaged(false);
+        hideWelcomePane();
 
         registerCoursesPane.setManaged(true);
         registerCoursesPane.setVisible(true);
+    }
+
+    private void hideWelcomePane(){
+        welcomePane.setVisible(false);
+        welcomePane.setManaged(false);
     }
 
     public void showWelcomePane(){
         welcomePane.setVisible(true);
         welcomePane.setManaged(true);
     }
+
+    public void showCourseDisplayPane(){
+        courseDisplayPane.setVisible(true);
+        courseDisplayPane.setManaged(true);
+    }
     @FXML
     public void courseRegisterButtonClick(){
         String courseName = userCourseChoice.getText();
         registerForCourses(courseName);
+    }
+
+    @FXML
+    public void displayCurrCoursesButtonClick(){
+        hideWelcomePane();
+        courseDisplayInformation.setText(displayCurrentCourses(currentUserName, currentPassword));
+        showCourseDisplayPane();
+    }
+
+    @FXML
+    public void displayCompletedCoursesButtonClick(){
+        hideWelcomePane();
+        courseDisplayInformation.setText(displayCompletedCourses(currentUserName, currentPassword));
+        showCourseDisplayPane();
     }
 
     @FXML
@@ -483,6 +523,18 @@ public class Aurora {
         }
         registerForCoursesUI();
     }
+    @FXML
+    public void markCourseCompletedButtonClick(){
+        currCoursesToMarkDisplay.setText(displayCurrentCourses(currentUserName, currentPassword));
+        hideWelcomePane();
+        showMarkCoursePane();
+    }
+
+    @FXML
+    public void courseMarkButtonClick(){
+        markCourseCompleted(userMarkCourseChoice.getText());
+    }
+
     /**
      * A helper method that keeps askign the user for their username and password, unless they enter "-1".
      *
@@ -635,31 +687,61 @@ public class Aurora {
 
         return studentFound;
     }
+
+    public void hideCourseDisplayPane(){
+        courseDisplayPane.setVisible(false);
+        courseDisplayPane.setManaged(false);
+    }
+
     @FXML
     public void backButtonPressed(ActionEvent event){
         Button buttonClicked = (Button) event.getSource();
-
         if (buttonClicked == registerCourseBackButton){ //if the same object in memory reference
             hideRegisterCoursesPane();
+        } else if (buttonClicked == courseDisplayBackButton){
+            System.out.println("course display back button pressed");
+            hideCourseDisplayPane();
+        } else if (buttonClicked == markCourseBackButton){
+            hideMarkCoursePane();
         }
-    }
-    private void hideRegisterCoursesPane(){
-        registerCoursesPane.setVisible(false);
-        registerCoursesPane.setManaged(false);
         showWelcomePane();
     }
 
-    private void labelDisappear(Label label){
-        registerInformLabel.setVisible(true);
-        PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
-        courseRegisterButton.setDisable(true);
+    private void hideRegisterCoursesPane(){
+        registerCoursesPane.setVisible(false);
+        registerCoursesPane.setManaged(false);
+    }
+
+    private void hideMarkCoursePane(){
+        markCoursePane.setVisible(false);
+        markCoursePane.setManaged(false);
+    }
+
+    private void showMarkCoursePane(){
+        markCoursePane.setVisible(true);
+        markCoursePane.setManaged(true);
+    }
+                                //registerInformLabel, courseRegistrationButton, registerCourseBackButton, hideRegisterCoursesPane()
+    private void labelDisappear(Label label, Button buttonToDisable, Button backButtonToDisable){
+        label.setVisible(true);
+        backButtonToDisable.setDisable(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        //courseRegisterButton.setDisable(true);
+        buttonToDisable.setDisable(true);
         pause.setOnFinished(event -> {
-            label.setVisible(false);
-            if (registerInformLabel.getText().contains("successful")){
+            label.setVisible(false); //registerInformLabel
+            backButtonToDisable.setDisable(false); //turn on the back button //registerCourseBackButton
+            if (label.getText().contains("successful") || label.getText().contains("completed")){
                 //switch back to welcome to aurora screen
-                hideRegisterCoursesPane();
+                if (label == registerInformLabel) {
+                    hideRegisterCoursesPane(); //hideRegisterCoursesPane
+                } else if (label == markInformLabel){
+                    hideMarkCoursePane();
+                }
+                showWelcomePane();
             }
-            courseRegisterButton.setDisable(false);
+            //courseRegisterButton.setDisable(false);
+            buttonToDisable.setDisable(false);
         });
 
         pause.play();
@@ -685,6 +767,7 @@ public class Aurora {
                     writeToUserAccounts(updatedLines);
                 }
                 registerInformLabel.setText("You have successfully registered for " + userCourseChoice.getText());
+                registerCourseBackButton.setDisable(true);
             } else if (takingCurrently) {
                 registerInformLabel.setText("You are currently registered for " + userCourseChoice.getText());
             } else {
@@ -694,17 +777,20 @@ public class Aurora {
             //inform the user if we're not already telling them to try again.
             registerInformLabel.setText("That Course Is Currently Not Offered. Try Again.");
         }
-        labelDisappear(registerInformLabel);
+        //registerInformLabel, courseRegistrationButton, registerCourseBackButton, hideRegisterCoursesPane()
+        labelDisappear(registerInformLabel, courseRegisterButton, registerCourseBackButton);
     }
 
     /**
      * Displays all the courses the student is taking in a list format.
      * @param studentName  The name of the student whose course list we want to access.
      * @param studentPassword  The password of the student whose course list we want to access.
+     *
+     * @return          Returns a string that contains a list of the current courses a user has signed up for.
      */
-    public static void displayCurrentCourses(String studentName, String studentPassword){
+    public static String displayCurrentCourses(String studentName, String studentPassword){
         StudentPlan studentPlan = findStudentByName(studentName, studentPassword).getStudentPlan();
-        System.out.println(studentPlan.printStudentCurrentCourseInfo());
+        return studentPlan.printStudentCurrentCourseInfo();
     }
 
     /**
@@ -712,10 +798,12 @@ public class Aurora {
      * and still have access to their information.
      * @param studentName  The name of the student whose course list we want to access.
      * @param studentPassword  The password of the student whose course list we want to access.
+     *
+     * @return          Returns a string that contains a list of the completed courses a user has signed up for.
      */
-    public static void displayCompletedCourses(String studentName, String studentPassword){
+    public static String displayCompletedCourses(String studentName, String studentPassword){
         StudentPlan studentPlan = findStudentByName(studentName, studentPassword).getStudentPlan();
-        System.out.println(studentPlan.printStudentCompletedCourseInfo());
+        return studentPlan.printStudentCompletedCourseInfo();
     }
 
     /**
@@ -741,18 +829,16 @@ public class Aurora {
      * to their list of completed courses. This data is saved on the user's account, so they can logout
      * and still have access to their information.
      */
-    public static void markCourseCompleted(){
-        System.out.println("Here are your current courses:");
-        displayCurrentCourses(currentUserName, currentPassword);
-        System.out.println("Input completed course name: ");
-        String courseToUpdate = getValidStringInput();
-
+    public void markCourseCompleted(String courseToUpdate){
         StudentPlan currStudentPlan = findStudentByName(currentUserName, currentPassword).getStudentPlan();
         if (!currStudentPlan.aCurrentCourse(courseToUpdate)){
+            markInformLabel.setText("You are not currently registered for that course.");
             System.out.println("You are not currently registered for that course.\n");
         } else {
             markCourseCompletedHelper(currStudentPlan, courseToUpdate);
             System.out.println(courseToUpdate + " has been marked as completed.\n");
+            markInformLabel.setText(courseToUpdate + " has been marked as completed.");
+            labelDisappear(markInformLabel, courseMarkEnterButton, markCourseBackButton);
         }
 
     }

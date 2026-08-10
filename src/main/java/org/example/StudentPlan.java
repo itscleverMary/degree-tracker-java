@@ -107,16 +107,15 @@ public class StudentPlan {
     public String printStudentCurrentCourseInfo(){
         StringBuilder stringBuilder = new StringBuilder();
         Iterator<Course> currentCoursesIterator = currentCourses.iterator();
-        stringBuilder.append("Current Courses: [");
+        stringBuilder.append("Current Courses:\n");
 
         while (currentCoursesIterator.hasNext()){
             stringBuilder.append(currentCoursesIterator.next().getCourseName());
             if (currentCoursesIterator.hasNext()){
-                stringBuilder.append(", ");
+                stringBuilder.append("\n");
             }
         }
 
-        stringBuilder.append("]\n");
         return stringBuilder.toString();
     }
 
@@ -128,16 +127,14 @@ public class StudentPlan {
     public String printStudentCompletedCourseInfo(){
         StringBuilder stringBuilder = new StringBuilder();
         Iterator<Course> completedCoursesIterator = completedCourses.iterator();
+        stringBuilder.append("Completed Courses:\n");
 
-        stringBuilder.append("Completed Courses: [");
         while (completedCoursesIterator.hasNext()){
             stringBuilder.append(completedCoursesIterator.next().getCourseName());
             if (completedCoursesIterator.hasNext()){
-                stringBuilder.append(", ");
+                stringBuilder.append("\n");
             }
         }
-
-        stringBuilder.append("]\n");
 
         return stringBuilder.toString();
     }
