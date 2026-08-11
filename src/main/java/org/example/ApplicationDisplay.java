@@ -31,6 +31,7 @@ public class ApplicationDisplay extends Application {
     private String askIfUserHasAccount = "AskIfUserHasAccountAlready";
     private Stage theStage;
     private Parent auroraRoot;
+    private Parent applicationRoot;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -44,7 +45,7 @@ public class ApplicationDisplay extends Application {
         auroraDisplayLoader.setController(aurora);
         aurora.setApplicationDisplay(this);
 
-        Parent applicationRoot = applicationDisplayLoader.load();
+        applicationRoot = applicationDisplayLoader.load();
         auroraRoot = auroraDisplayLoader.load();
 
         aurora.setUpUI();
@@ -84,5 +85,11 @@ public class ApplicationDisplay extends Application {
 
     public void showScreen() {
         theStage.getScene().setRoot(auroraRoot);
+    }
+
+    public void showLogInScreen(){
+        updateInformLabel("Do you already have an account? (Y/N)");
+        userInput.setText("");
+        theStage.getScene().setRoot(applicationRoot);
     }
 }

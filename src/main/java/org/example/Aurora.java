@@ -83,7 +83,8 @@ public class Aurora {
     private Label markInformLabel;
     @FXML
     private Label registerInformLabel;
-
+    @FXML
+    private Button exitButton;
 
     public Aurora(){}
 
@@ -533,6 +534,14 @@ public class Aurora {
     @FXML
     public void courseMarkButtonClick(){
         markCourseCompleted(userMarkCourseChoice.getText());
+    }
+
+    @FXML
+    public void exitButtonClicked(){
+        System.out.println("exit button clicked");
+        hideWelcomePane();
+        //switch screen back to log in screen
+        applicationDisplay.showLogInScreen();
     }
 
     /**

@@ -39,7 +39,7 @@
             <Button fx:id="displayCompletedButton" alignment="CENTER" layoutX="341.0" layoutY="120.0" mnemonicParsing="false" onAction="#displayCompletedCoursesButtonClick" prefHeight="26.0" prefWidth="185.0" text="3. Display Completed Courses" />
             <Button fx:id="displayCurrentButton" alignment="CENTER" layoutX="92.0" layoutY="187.0" mnemonicParsing="false" onAction="#displayCurrCoursesButtonClick" prefHeight="26.0" prefWidth="185.0" text="2. Display Current Courses" />
             <Button fx:id="markCourseCompletedButton" alignment="CENTER" layoutX="341.0" layoutY="187.0" mnemonicParsing="false" onAction="#markCourseCompletedButtonClick" prefHeight="26.0" prefWidth="185.0" text="4. Mark Course As Completed" />
-            <Button fx:id="exitButton" alignment="CENTER" layoutX="208.0" layoutY="259.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="185.0" text="5. Exit" />
+            <Button fx:id="exitButton" alignment="CENTER" layoutX="208.0" layoutY="259.0" mnemonicParsing="false" onAction="#exitButtonClicked" prefHeight="26.0" prefWidth="185.0" text="5. Exit" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="registerCoursesPane" layoutX="-5.0" layoutY="-8.0" prefHeight="410.0" prefWidth="611.0" style="-fx-background-color: #FFDE21;" visible="false">
